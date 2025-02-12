@@ -1,6 +1,8 @@
+
 import rasterio
 import rasterio.plot
 import matplotlib
+import rioxarray as rxr 
 
 file = 'dorado_09222017/2017-09-22-00:00_2017-09-22-23:59_Sentinel-1_IW_VV+VH_Enhanced_visualization.tiff'
 tiff = rasterio.open(file)
@@ -8,7 +10,9 @@ tiff = rasterio.open(file)
 rasterio.plot.show(tiff)
 
 print(tiff.shape)
-
+#band 1 = red
+#band 2= green
+#band 3 = blue
 num_bands = tiff.count
 print(f"Number of bands: {num_bands}")
 
