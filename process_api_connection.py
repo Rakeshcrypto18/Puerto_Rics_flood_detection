@@ -110,7 +110,7 @@ request = SentinelHubRequest(
     responses=[
         SentinelHubRequest.output_response('default', MimeType.TIFF),
     ],
-    bbox=bbox,
+    bbox=pr_bbox,
     size=pr_size,
     config=config
 )
@@ -139,7 +139,7 @@ print(f"Image type: {image.dtype}")
 # plot function
 # factor 1/255 to scale between 0-1
 # factor 3.5 to increase brightness
-plot_image(image, factor=3.5 / 255, clip_range=(0, 1))
+#plot_image(image, factor=3.5 / 255, clip_range=(0, 1))
 
 """
 read geotiff as a dataframe
@@ -150,8 +150,8 @@ import rasterio.plot
 import matplotlib
 import rioxarray as rxr 
 
-#file = 'test/1463ebe6ae2f1fc4e69f120c2868d9c9/response.tiff'
-#tiff = rasterio.open(file)
+file = '<geotiff_name>'
+tiff = rasterio.open(file)
 
 import pandas as pd
 da = rxr.open_rasterio(file, masked=True)
