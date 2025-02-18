@@ -4,8 +4,10 @@ import rasterio.plot
 import matplotlib
 import rioxarray as rxr 
 
-file = 'dorado_09222017/2017-09-22-00:00_2017-09-22-23:59_Sentinel-1_IW_VV+VH_Enhanced_visualization.tiff'
+file = 'test_tiff.tiff'
 tiff = rasterio.open(file)
+
+
 
 rasterio.plot.show(tiff)
 
@@ -87,10 +89,15 @@ band_data
 import pandas as pd
 da = rxr.open_rasterio(file, masked=True)
 #da = da.rio.reproject("EPSG:4326")
-df = da[2].to_pandas()
+df = da[0].to_pandas()
 df['y'] = df.index
 df = pd.melt(df, id_vars='y')
 df
+
+filtered_df = df[df['x'] >= -66.05833]
+filtered_df
+
+da
 
 df2 = da[1].to_pandas()
 df2['y'] = df2.index
