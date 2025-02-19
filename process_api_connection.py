@@ -32,7 +32,7 @@ from sentinelhub import SHConfig
 
 config = SHConfig()
 config.sh_client_id = '<client id>'
-config.sh_client_secret = 'client secret id'
+config.sh_client_secret = '<client secret>'
 config.sh_base_url = 'https://sh.dataspace.copernicus.eu'
 config.sh_token_url = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token'
 config.save("cdse")
@@ -98,7 +98,7 @@ bbox = BBox(bbox=[-7377043.971, 2092185.762, -7372043.971, 2087185.762], crs=CRS
 # postflood_VH_gridnumber
 
 request = SentinelHubRequest(
-    data_folder="preflood_VV_01", #this is changing every pull
+    data_folder="testing2", #this is changing every pull
     evalscript=evalscript,
     input_data=[
         SentinelHubRequest.input_data(
@@ -106,7 +106,7 @@ request = SentinelHubRequest(
                     "s1iw", service_url=config.sh_base_url
                 ),          
             time_interval=('2017-09-01', '2017-09-16'), #this is chnaging depending on pre or post flood         
-            other_args={"dataFilter": {"mosaickingOrder": "mostRecent"},"processing": {"orthorectify": True,"demInstance": "COPERNICUS","speckleFilter": {"type": "LEE","windowSizeX": 3,"windowSizeY": 3}}}
+            other_args={"dataFilter": {"mosaickingOrder": "mostRecent"},"processing": {"backCoeff": "GAMMA0_TERRAIN","orthorectify": True,"demInstance": "COPERNICUS","speckleFilter": {"type": "LEE","windowSizeX": 3,"windowSizeY": 3}}}
         ),
     ],
     responses=[
