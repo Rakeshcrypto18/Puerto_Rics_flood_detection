@@ -24,7 +24,7 @@ postflood_VHtiff = rasterio.open(postflood_VH)
 code to explore plotting and inspection of tiff files if necessary
 """
 
-#rasterio.plot.show(tiff)
+rasterio.plot.show(preflood_VVtiff)
 
 # print(tiff.shape)
 

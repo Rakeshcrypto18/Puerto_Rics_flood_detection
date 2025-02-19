@@ -31,24 +31,24 @@ from sentinelhub import SHConfig
 
 
 config = SHConfig()
-config.sh_client_id = 'sh-ac01828e-eb8f-4ff4-b9de-7630c5312236'
-config.sh_client_secret = '2NHA7aykyeBqu3NZnrI7n9eVU5NU8oFb'
+config.sh_client_id = '<client id>'
+config.sh_client_secret = 'client secret id'
 config.sh_base_url = 'https://sh.dataspace.copernicus.eu'
 config.sh_token_url = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token'
 config.save("cdse")
 
-# config = SHConfig("cdse")
+config = SHConfig("cdse")
 
 """
 define bounding box coordinates of interest
 """
 
-coords_wgs84 = (-66.07507,18.41733,-66.058282,18.428126)
+# coords_wgs84 = (-66.07507,18.41733,-66.058282,18.428126)
 
 
 resolution = 10
-pr_bbox = BBox(bbox=coords_wgs84, crs=CRS.WGS84)
-pr_size = bbox_to_dimensions(pr_bbox, resolution=resolution)
+# pr_bbox = BBox(bbox=coords_wgs84, crs=CRS.WGS84)
+# pr_size = bbox_to_dimensions(pr_bbox, resolution=resolution)
 
 print(f"Image shape at {resolution} m resolution: {pr_size} pixels")
 
@@ -74,7 +74,7 @@ function setup() {
 function evaluatePixel(samples) {
   const value = Math.max(0, Math.log(samples.VH) * 0.21714724095 + 1);
   return {
-    default: [value, value, value, samples.dataMask],
+    default: [value, value, samples.dataMask],
     eobrowserStats: [Math.max(-30, (10 * Math.log10(samples.VH)))],
     dataMask: [samples.dataMask],
   };
@@ -94,9 +94,10 @@ return [Math.max(0, Math.log(VH) * 0.21714724095 + 1)];
 """
 send request
 """
+bbox = BBox(bbox=[-7377043.971, 2092185.762, -7372043.971, 2087185.762], crs=CRS.POP_WEB)
 
 request = SentinelHubRequest(
-    data_folder="test",
+    data_folder="preflood_VV_01",
     evalscript=evalscript,
     input_data=[
         SentinelHubRequest.input_data(
@@ -104,16 +105,38 @@ request = SentinelHubRequest(
                     "s1iw", service_url=config.sh_base_url
                 ),          
             time_interval=('2017-09-01', '2017-09-16'),          
-            other_args={"dataFilter": {"mosaickingOrder": "mostRecent","resolution": "HIGH"},"processing": {"orthorectify": True,"demInstance": "COPERNICUS","speckleFilter": {"type": "LEE","windowSizeX": 3,"windowSizeY": 3}}}
+            other_args={"dataFilter": {"mosaickingOrder": "mostRecent"},"processing": {"orthorectify": True,"demInstance": "COPERNICUS","speckleFilter": {"type": "LEE","windowSizeX": 3,"windowSizeY": 3}}}
         ),
     ],
     responses=[
         SentinelHubRequest.output_response('default', MimeType.TIFF),
     ],
-    bbox=pr_bbox,
-    size=pr_size,
+    bbox=bbox,
+    size=[474.37555468171587, 474.3100863719954],
     config=config
 )
+
+request.get_data()
+
+# request = SentinelHubRequest(
+#     data_folder="test",
+#     evalscript=evalscript,
+#     input_data=[
+#         SentinelHubRequest.input_data(
+#             data_collection=DataCollection.SENTINEL1_IW.define_from(
+#                     "s1iw", service_url=config.sh_base_url
+#                 ),          
+#             time_interval=('2017-09-01', '2017-09-16'),          
+#             other_args={"dataFilter": {"mosaickingOrder": "mostRecent","resolution": "HIGH"},"processing": {"orthorectify": True,"demInstance": "COPERNICUS","speckleFilter": {"type": "LEE","windowSizeX": 3,"windowSizeY": 3}}}
+#         ),
+#     ],
+#     responses=[
+#         SentinelHubRequest.output_response('default', MimeType.TIFF),
+#     ],
+#     bbox=pr_bbox,
+#     size=pr_size,
+#     config=config
+# )
 
 
 #response = request.get_data()
@@ -150,7 +173,7 @@ import rasterio.plot
 import matplotlib
 import rioxarray as rxr 
 
-file = '<geotiff_name>'
+file = 'test/85d04f52ed4133d55e72d84a476ef5a6/response.tiff'
 tiff = rasterio.open(file)
 
 import pandas as pd
