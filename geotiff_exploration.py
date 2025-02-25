@@ -72,7 +72,7 @@ df_preflood_vh['y'] = df_preflood_vh.index
 df_preflood_vh = pd.melt(df_preflood_vh, id_vars='y')
 df_preflood_vh=df_preflood_vh.rename(columns={'value':'preflood_vh'})
 
-da = rxr.open_rasterio(postflood_VV, masked=True)
+da = rxr.open_rasterio(postflood_VH, masked=True)
 #da = da.rio.reproject("EPSG:4326")
 df_postflood_vh = da[0].to_pandas()
 df_postflood_vh['y'] = df_postflood_vh.index
