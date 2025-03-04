@@ -7,7 +7,7 @@ import numpy as np
 from rasterio.features import shapes
 
 # File path
-flood_extent_file = "C:/Users/tosho/OneDrive/Documents/Spring 2025/Data Analytics Project (DAEN 690)/Capstone Project Python Code/NA_E114N015T3_ENSEMBLE_FLOOD_20170921T101423_VV_NA020M_E114N015T3_20170921.tif"
+flood_extent_file = "GFM_data_shapefile_create/central_PR_flood_extent.tif"
 
 # Open the raster file
 with rasterio.open(flood_extent_file) as src:
