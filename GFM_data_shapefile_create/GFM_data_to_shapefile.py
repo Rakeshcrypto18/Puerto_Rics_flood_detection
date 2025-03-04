@@ -42,7 +42,7 @@ print(f"Flood polygons saved to {shapefile_path}")
 
 ### VIEW THE POLYGONS
 # Load the shapefile
-shapefile_path = "C:/Users/tosho/OneDrive/Documents/Spring 2025/Data Analytics Project (DAEN 690)/Capstone Project Python Code/flood_polygons.shp"
+shapefile_path = "GFM_data_shapefile_create/central_PR_flood_polygons.shp"
 gdf = gpd.read_file(shapefile_path)
 
 # Plot the polygons
