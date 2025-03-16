@@ -5,127 +5,77 @@ import rasterio
 import rasterio.plot
 import matplotlib
 import rioxarray as rxr 
-
-""""
-read pre and post flood images
-"""
-preflood_VV = 'grid_01_05_tiffs/preflood_VV_05.tiff'
-preflood_VH = 'grid_01_05_tiffs/preflood_VH_05.tiff'
-postflood_VV= 'grid_01_05_tiffs/postflood_VV_05.tiff'
-postflood_VH = 'grid_01_05_tiffs/postflood_VH_05.tiff'
-
-
-preflood_VVtiff = rasterio.open(preflood_VV)
-preflood_VHtiff = rasterio.open(preflood_VH)
-postflood_VVtiff = rasterio.open(postflood_VV)
-postflood_VHtiff = rasterio.open(postflood_VH)
-
-""""
-code to explore plotting and inspection of tiff files if necessary
-"""
-
-rasterio.plot.show(preflood_VVtiff)
-
-# print(tiff.shape)
-
-# num_bands = tiff.count
-# print(f"Number of bands: {num_bands}")
-
-# band_indexes = tiff.indexes
-# print(f"Band indexes: {band_indexes}")
-
-# band_dtypes = tiff.dtypes
-# print(f"Band data types: {band_dtypes}")
-
-""""
-read data from a band example
-"""
-
-# # Open the GeoTIFF file
-# with rasterio.open(file) as src:
-#     # Read a specific band (e.g., band 1)
-#     band_number = 1
-#     band_data = src.read(band_number)
-
-# band_data
-
-#different bands to pandas
 import pandas as pd
-da = rxr.open_rasterio(preflood_VV, masked=True)
-#da = da.rio.reproject("EPSG:4326")
-df_preflood_vv = da[0].to_pandas()
-df_preflood_vv['y'] = df_preflood_vv.index
-df_preflood_vv = pd.melt(df_preflood_vv, id_vars='y')
-df_preflood_vv=df_preflood_vv.rename(columns={'value':'preflood_vv'})
-df_preflood_vv
-
-da = rxr.open_rasterio(postflood_VV, masked=True)
-#da = da.rio.reproject("EPSG:4326")
-df_postflood_vv = da[0].to_pandas()
-df_postflood_vv['y'] = df_postflood_vv.index
-df_postflood_vv = pd.melt(df_postflood_vv, id_vars='y')
-df_postflood_vv=df_postflood_vv.rename(columns={'value':'postflood_vv'})
-
-da = rxr.open_rasterio(preflood_VH, masked=True)
-#da = da.rio.reproject("EPSG:4326")
-df_preflood_vh = da[0].to_pandas()
-df_preflood_vh['y'] = df_preflood_vh.index
-df_preflood_vh = pd.melt(df_preflood_vh, id_vars='y')
-df_preflood_vh=df_preflood_vh.rename(columns={'value':'preflood_vh'})
-
-da = rxr.open_rasterio(postflood_VH, masked=True)
-#da = da.rio.reproject("EPSG:4326")
-df_postflood_vh = da[0].to_pandas()
-df_postflood_vh['y'] = df_postflood_vh.index
-df_postflood_vh = pd.melt(df_postflood_vh, id_vars='y')
-df_postflood_vh=df_postflood_vh.rename(columns={'value':'postflood_vh'})
 
 """"
-merge data into one single pandas dataframe
+load in csv data
 """
-join1= pd.merge(df_postflood_vh, df_postflood_vv, on=['y', 'x'], how='inner')
-join2= pd.merge(df_preflood_vv, df_preflood_vh, on=['y', 'x'], how='inner')
-df = pd.merge(join1,join2, on=['y', 'x'], how='inner')
+
+df = pd.read_csv('01_05_decible_vh.csv')
 df
 
-df['postfloodvv-prefloodvv'] = df['postflood_vv'] - df['preflood_vv']
+df['change']= df['postflood_vh']-df['preflood_vh']
 df
 
-df['postfloodvh-prefloodvh'] = df['postflood_vh'] - df['preflood_vh']
-df
+#decrease in vh
+df_decrease = df[df['change']<0]
+df_decrease
+
+#filter for values that are less than 20 pre flood
+df_low_preflood = df_decrease[df_decrease['preflood_vh'] >= -20]
+df_low_preflood
+
+#filter for post flood vlaues that are now less than 20
+df_low_postflood = df_low_preflood[df_low_preflood['postflood_vh'] <= -20]
+df_low_postflood
+
+df_low_postflood.to_csv('change_test2.csv')
+
 
 """"
-not sure what to do with the data from here
+code below changes neighboring points to a shape file
 """
 
-
-df[['postflood_vh', 'preflood_vh','postfloodvh-prefloodvh']]
-
-#count number of negative values in post flood - pre flood
-
-negative_points = (df['postfloodvh-prefloodvh'] < 0).sum()
-print(f"Number of values less than 0 in col1: {negative_points}")
+import geopandas as gpd
 
 
-negative_points_vh = df[df['postfloodvh-prefloodvh'] < -30]
-negative_points_vv = df[df['postfloodvv-prefloodvv'] < -30]
+gdf = gpd.GeoDataFrame(
+    df_low_postflood, geometry=gpd.points_from_xy(df_low_postflood.x, df_low_postflood.y), crs="EPSG:4326"
+)
+gdf
 
-negative_points_vh
-negative_points_vv
+gdf = gdf.to_crs(epsg=3857)
+gdf
 
-negative_points_vh.to_csv('testing_vh.csv')
-negative_points_vv.to_csv('testing_vv.csv')
+buffer_distance = 11
+gdf['buffer_polygon'] = gdf.geometry.buffer(buffer_distance, cap_style=3)
+gdf
+
+gdf = gdf.reset_index()
+gdf.rename(columns={'index': 'id'}, inplace=True)
+
+gdf= gdf.rename(columns ={'geometry':'point'})
+gdf=gdf.rename(columns ={'buffer_polygon':'geometry'})
+gdf
+
+#testing merge
+single_multi_polygon = gdf.unary_union
+
+single_multi_polygon
+
+from shapely.geometry import MultiPolygon
+
+gdf = gpd.GeoDataFrame(geometry=[single_multi_polygon], crs="EPSG:3857")
+gdf
+
+gdf = gdf.explode()
+gdf = gdf.to_crs(epsg=4326)
+gdf
+
+gdf.to_file('test_file.shp')
 
 
 
-
-# Open the GeoTIFF file
-with rasterio.open(postflood_VHtiff) as src:
-    # Read a specific band (e.g., band 1)
-    band_number = 1
-    band_data = src.read(band_number)
-
-band_data
 
 
 
