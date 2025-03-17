@@ -88,8 +88,13 @@ send request
 #this is changing depending on grid being pulled
 bbox = BBox(bbox=[-7377043.971, 2092185.762, -7372043.971, 2087185.762], crs=CRS.POP_WEB)
 
-#pre flood time: '2017-09-01', '2017-09-16'
-#post flood time: '2017-09-20', '2017-09-28'
+#pre flood time: '2017-09-01', '2017-09-10' VH decible and VV decible 
+#pre flood time: '2017-09-01', '2017-09-16' VH decible and VV decible 
+#post flood time: '2017-09-20', '2017-09-25' VH decible and VV decible 
+#post flood time: '2017-09-25', '2017-09-30' VH decible and VV decible 
+
+# NDVI VV
+# NDVI VH
 
 # namming convention
 # preflood_VV_gridnumber
