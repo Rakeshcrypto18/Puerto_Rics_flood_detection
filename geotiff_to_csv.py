@@ -10,6 +10,12 @@ import pandas as pd
 """"
 read pre and post flood images
 """
+preflood1_tiff = 'NDFI_NDFVI_tiffs/preflood1_VH_04.tiff'
+preflood2_tiff = 'NDFI_NDFVI_tiffs/preflood2_VH_04.tiff'
+preflood3_tiff = 'NDFI_NDFVI_tiffs/preflood3_VH_04.tiff'
+postflood1_tiff = 'NDFI_NDFVI_tiffs/postflood1_VH_04.tiff'
+postflood2_tiff = 'NDFI_NDFVI_tiffs/postflood2_VH_04.tiff'
+
 # #preflood_VV = 'vh_decible/preflood_VV_01.tiff'
 # preflood_VH = 'vh_decible/preflood_VH_05.tiff'
 # #postflood_VV= 'vh_decible/postflood_VV_01.tiff'
@@ -21,11 +27,11 @@ read pre and post flood images
 # #postflood_VVtiff = rasterio.open(postflood_VV)
 # postflood_VHtiff = rasterio.open(postflood_VH)
 
-post_dem ='dem_tifs/postflood_dem_04.tiff'
-post_dem_tiff = rasterio.open(post_dem)
+# post_dem ='dem_tifs/postflood_dem_04.tiff'
+# post_dem_tiff = rasterio.open(post_dem)
 
-pre_dem ='dem_tifs/preflood_dem_04.tiff'
-pre_dem_tiff = rasterio.open(pre_dem)
+# pre_dem ='dem_tifs/preflood_dem_04.tiff'
+# pre_dem_tiff = rasterio.open(pre_dem)
 
 # file = 'postflood_VH_05/978e4d3b9fa514c2226680957a48aad4/response.tiff'
 # tiff = rasterio.open(file)
@@ -63,6 +69,46 @@ bands to pandas each section is for a different band that has been comented out 
 """
 
 #different bands to pandas
+da = rxr.open_rasterio(preflood1_tiff, masked=True)
+#da = da.rio.reproject("EPSG:4326")
+dfpreflood1 = da[0].to_pandas()
+dfpreflood1['y'] = dfpreflood1.index
+dfpreflood1 = pd.melt(dfpreflood1, id_vars='y')
+dfpreflood1=dfpreflood1.rename(columns={'value':'preflood_vh1'})
+dfpreflood1
+
+da = rxr.open_rasterio(preflood2_tiff, masked=True)
+#da = da.rio.reproject("EPSG:4326")
+dfpreflood2 = da[0].to_pandas()
+dfpreflood2['y'] = dfpreflood2.index
+dfpreflood2 = pd.melt(dfpreflood2, id_vars='y')
+dfpreflood2=dfpreflood2.rename(columns={'value':'preflood_vh2'})
+dfpreflood2
+
+da = rxr.open_rasterio(preflood3_tiff, masked=True)
+#da = da.rio.reproject("EPSG:4326")
+dfpreflood3 = da[0].to_pandas()
+dfpreflood3['y'] = dfpreflood3.index
+dfpreflood3 = pd.melt(dfpreflood3, id_vars='y')
+dfpreflood3=dfpreflood3.rename(columns={'value':'preflood_vh3'})
+dfpreflood3
+
+da = rxr.open_rasterio(postflood1_tiff, masked=True)
+#da = da.rio.reproject("EPSG:4326")
+dfpostflood1 = da[0].to_pandas()
+dfpostflood1['y'] = dfpostflood1.index
+dfpostflood1 = pd.melt(dfpostflood1, id_vars='y')
+dfpostflood1=dfpostflood1.rename(columns={'value':'postflood_vh1'})
+dfpostflood1
+
+da = rxr.open_rasterio(postflood2_tiff, masked=True)
+#da = da.rio.reproject("EPSG:4326")
+dfpostflood2 = da[0].to_pandas()
+dfpostflood2['y'] = dfpostflood2.index
+dfpostflood2 = pd.melt(dfpostflood2, id_vars='y')
+dfpostflood2=dfpostflood2.rename(columns={'value':'postflood_vh2'})
+dfpostflood2
+
 
 # da = rxr.open_rasterio(preflood_VV, masked=True)
 # #da = da.rio.reproject("EPSG:4326")
@@ -93,23 +139,31 @@ bands to pandas each section is for a different band that has been comented out 
 # df_postflood_vh = pd.melt(df_postflood_vh, id_vars='y')
 # df_postflood_vh=df_postflood_vh.rename(columns={'value':'postflood_vh'})
 
-da = rxr.open_rasterio(post_dem, masked=True)
-#da = da.rio.reproject("EPSG:4326")
-df_postflood_dem = da[0].to_pandas()
-df_postflood_dem['y'] = df_postflood_dem.index
-df_postflood_dem = pd.melt(df_postflood_dem, id_vars='y')
-df_postflood_dem=df_postflood_dem.rename(columns={'value':'postflood_dem'})
+# da = rxr.open_rasterio(post_dem, masked=True)
+# #da = da.rio.reproject("EPSG:4326")
+# df_postflood_dem = da[0].to_pandas()
+# df_postflood_dem['y'] = df_postflood_dem.index
+# df_postflood_dem = pd.melt(df_postflood_dem, id_vars='y')
+# df_postflood_dem=df_postflood_dem.rename(columns={'value':'postflood_dem'})
 
-da = rxr.open_rasterio(pre_dem, masked=True)
-#da = da.rio.reproject("EPSG:4326")
-df_preflood_dem = da[0].to_pandas()
-df_preflood_dem['y'] = df_preflood_dem.index
-df_preflood_dem = pd.melt(df_preflood_dem, id_vars='y')
-df_preflood_dem=df_preflood_dem.rename(columns={'value':'preflood_dem'})
+# da = rxr.open_rasterio(pre_dem, masked=True)
+# #da = da.rio.reproject("EPSG:4326")
+# df_preflood_dem = da[0].to_pandas()
+# df_preflood_dem['y'] = df_preflood_dem.index
+# df_preflood_dem = pd.melt(df_preflood_dem, id_vars='y')
+# df_preflood_dem=df_preflood_dem.rename(columns={'value':'preflood_dem'})
 
 """"
 merge data into one single pandas dataframe
 """
+join1= pd.merge(dfpreflood1, dfpreflood2, on=['y', 'x'], how='inner')
+join2= pd.merge(join1, dfpreflood3, on=['y', 'x'], how='inner')
+join3= pd.merge(dfpostflood1, dfpostflood2, on=['y', 'x'], how='inner')
+df = pd.merge(join2,join3, on=['y', 'x'], how='inner')
+df
+
+df.to_csv('vh_NDFI_calc_04.csv')
+
 # join1= pd.merge(df_postflood_vh, df_postflood_vv, on=['y', 'x'], how='inner')
 # join2= pd.merge(df_preflood_vv, df_preflood_vh, on=['y', 'x'], how='inner')
 # df = pd.merge(join1,join2, on=['y', 'x'], how='inner')
@@ -118,20 +172,20 @@ merge data into one single pandas dataframe
 """
 just doing VH here
 """
-df= pd.merge(df_postflood_vh, df_preflood_vh, on=['y', 'x'], how='inner')
-df
+# df= pd.merge(df_postflood_vh, df_preflood_vh, on=['y', 'x'], how='inner')
+# df
 
 """
 just doing dem here
 """
-df= pd.merge(df_postflood_dem, df_preflood_dem, on=['y', 'x'], how='inner')
-df
+# df= pd.merge(df_postflood_dem, df_preflood_dem, on=['y', 'x'], how='inner')
+# df
 
-#test if any values differ
-df['difference'] = df['postflood_dem']- df['preflood_dem']
-df
+# #test if any values differ
+# df['difference'] = df['postflood_dem']- df['preflood_dem']
+# df
 
-df[df['difference']!=0]
+# df[df['difference']!=0]
 
 df1 = df
 df2 = df
