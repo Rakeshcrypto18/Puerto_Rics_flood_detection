@@ -134,6 +134,8 @@ df_change_points
 
 
 
+
+
 """"
 code below changes neighboring points to a shape file for NDFI
 """
@@ -141,7 +143,7 @@ code below changes neighboring points to a shape file for NDFI
 import geopandas as gpd
 
 df2
-threshold = df2[df2['NDFI']<=-0.5]
+threshold = df2[df2['NDFI']<=-0.40]
 threshold
 
 gdf = gpd.GeoDataFrame(
@@ -177,7 +179,7 @@ gdf = gdf.explode()
 gdf = gdf.to_crs(epsg=4326)
 gdf
 
-gdf.to_file('NDFI_test.shp')
+gdf.to_file('NDFI_test3.shp')
 
 
 
