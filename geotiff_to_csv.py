@@ -11,11 +11,11 @@ import pandas as pd
 read pre and post flood images
 """
 #MODIFY ME
-preflood1_tiff = 'NDFI_NDFVI_tiffs/preflood1_VH_04.tiff'
-preflood2_tiff = 'NDFI_NDFVI_tiffs/preflood2_VH_04.tiff'
-preflood3_tiff = 'NDFI_NDFVI_tiffs/preflood3_VH_04.tiff'
-postflood1_tiff = 'NDFI_NDFVI_tiffs/postflood1_VH_04.tiff'
-postflood2_tiff = 'NDFI_NDFVI_tiffs/postflood2_VH_04.tiff'
+preflood1_tiff = 'NDFI_NDFVI_tiffs/preflood1_04.tiff'
+preflood2_tiff = 'NDFI_NDFVI_tiffs/preflood2_04.tiff'
+preflood3_tiff = 'NDFI_NDFVI_tiffs/preflood3_04.tiff'
+postflood1_tiff = 'NDFI_NDFVI_tiffs/postflood1_04.tiff'
+postflood2_tiff = 'NDFI_NDFVI_tiffs/postflood2_04.tiff'
 
 
 """"
