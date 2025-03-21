@@ -31,3 +31,6 @@ For further fuzzy logic, we use a loop to assign points to each flood extent pol
 Current cell 1-5 polygon and point values are in floodpoints_and_polygons.csv
 
 Now grouping by polygon id we can get means for specific values like postflood vh and change by polygon and eliminate if the polygon does not meet specific thresholds form our fuzzy logic
+
+EXLPORING:
+we also have DEM tiffs to explore using slope as a filter for fuzzy logic. the tiffs for dem values are in the dem_tifs folder and were pulled using the copernicus API. (dem_process_API.py currently in allisons branch will move later). code to change the dem values to slope currently being explored will be placed in dem_to_sple.py. we can later add these slope vlaues to our floodpoints_and_polygons.csv by joining on latitude and longitude
