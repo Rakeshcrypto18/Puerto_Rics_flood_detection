@@ -26,11 +26,11 @@ df3 = pd.read_csv('geotiff_csvs/vh_03.csv')
 df4 = pd.read_csv('geotiff_csvs/vh_04.csv')
 df5 = pd.read_csv('geotiff_csvs/vh_05.csv')
 
-df1 = pd.read_csv('geotiff_csvs/vv_01.csv')
-df2 = pd.read_csv('geotiff_csvs/vv_02.csv')
-df3 = pd.read_csv('geotiff_csvs/vv_03.csv')
-df4 = pd.read_csv('geotiff_csvs/vv_04.csv')
-df5 = pd.read_csv('geotiff_csvs/vv_05.csv')
+# df1 = pd.read_csv('geotiff_csvs/vv_01.csv')
+# df2 = pd.read_csv('geotiff_csvs/vv_02.csv')
+# df3 = pd.read_csv('geotiff_csvs/vv_03.csv')
+# df4 = pd.read_csv('geotiff_csvs/vv_04.csv')
+# df5 = pd.read_csv('geotiff_csvs/vv_05.csv')
 
 """"
 concat all csv data into one csv to analyse
@@ -51,12 +51,12 @@ df['min_post'] = df[['postflood_vh1', 'postflood_vh2']].min(axis=1)
 df['max_pre'] = df[['preflood_vh1', 'preflood_vh2', 'preflood_vh3']].max(axis=1)
 df['max_post'] = df[['postflood_vh1', 'postflood_vh2']].max(axis=1)
 
-df['mean_pre'] = df[['preflood_vv1', 'preflood_vv2', 'preflood_vv3']].mean(axis=1)
-df['mean_post'] = df[['postflood_vv1', 'postflood_vv2']].mean(axis=1)
-df['min_pre'] = df[['preflood_vv1', 'preflood_vv2', 'preflood_vv3']].min(axis=1)
-df['min_post'] = df[['postflood_vv1', 'postflood_vv2']].min(axis=1)
-df['max_pre'] = df[['preflood_vv1', 'preflood_vv2', 'preflood_vv3']].max(axis=1)
-df['max_post'] = df[['postflood_vv1', 'postflood_vv2']].max(axis=1)
+# df['mean_pre'] = df[['preflood_vv1', 'preflood_vv2', 'preflood_vv3']].mean(axis=1)
+# df['mean_post'] = df[['postflood_vv1', 'postflood_vv2']].mean(axis=1)
+# df['min_pre'] = df[['preflood_vv1', 'preflood_vv2', 'preflood_vv3']].min(axis=1)
+# df['min_post'] = df[['postflood_vv1', 'postflood_vv2']].min(axis=1)
+# df['max_pre'] = df[['preflood_vv1', 'preflood_vv2', 'preflood_vv3']].max(axis=1)
+# df['max_post'] = df[['postflood_vv1', 'postflood_vv2']].max(axis=1)
 
 """"
 calculate mean change
@@ -69,12 +69,29 @@ df
 calculate NDFI and NDVFI using values we just created
 *** not sure if NDVFI is working
 """
-df['NDFI'] = (df['mean_pre']-(df['min_post']+df['min_pre']))/(df['mean_pre']+(df['min_post']+df['min_pre']))
-df['NDFVI'] = ((df['max_post']+df['max_pre'])-df['mean_pre'])/((df['max_post']+df['max_pre'])+df['mean_pre'])
+#old not working/not correct calculation
+# df['NDFI'] = (df['mean_pre']-(df['min_post']+df['min_pre']))/(df['mean_pre']+(df['min_post']+df['min_pre']))
+# df['NDFVI'] = ((df['max_post']+df['max_pre'])-df['mean_pre'])/((df['max_post']+df['max_pre'])+df['mean_pre'])
 
+# values that became brighter reference flooded vegitation
+# they use the mean reference image for "normal" values and then take the min or max of the post flood to get the largest 
+# difference in the time series (most drastic change)
+df['DFI'] = df['min_post'] - df['mean_pre']
+df['DFVI'] = df['max_post'] - df['mean_pre']
+df
+
+df['NDFI'] = (df['DFI'] - df['DFI'].min())/(df['DFI'].max()-df['DFI'].min())
+df['NDFVI'] = (df['DFVI'] - df['DFVI'].min())/(df['DFVI'].max()-df['DFVI'].min())
+df
+
+
+
+df
 #svae to csv?
-#saving for VV exploration
-#df.to_csv('vv_explore.csv')
+#saving for exploration
+df_save = df [['y', 'x','NDFI', 'DFI', 'NDFVI', 'DFVI', 'mean_post', 'mean_pre', 'change']]
+df_save 
+df_save.to_csv('df_NDF_NDFVI_explore.csv')
 
 """"
 NDFI and NDVFI thresholding and shape file creation
@@ -186,6 +203,9 @@ df
 df_decrease = df[df['change']<0]
 df_decrease
 
+df_decrease = df[df['DFI']<0]
+df_decrease
+
 # filter for values that are less than 20 pre flood
 # we can change this value depending on threshold
 # this removes values that have a negative change but we already previously classified as water, only want values not classified as a flood in pree flood
@@ -197,8 +217,11 @@ df_low_preflood
 # filter for post flood vlaues that are now less than 20
 # we can change this value depending on threshold
 # this removes values that have a negative change but still have vh values above -20
-df_low_postflood = df_low_preflood[df_low_preflood['mean_post'] <= -20]
+df_low_postflood = df_decrease[df_decrease['mean_post'] <= -20]
 df_low_postflood
+
+# df_low_postflood = df_low_preflood[df_low_preflood['mean_post'] <= -20]
+# df_low_postflood
 
 """"
 Save mean change values to a csv
@@ -207,7 +230,7 @@ Save mean change values to a csv
 df_change = df_low_postflood#[['x','y',"change"]]
 df_change
 
-df_change.to_csv('change_mean_vh_20db.csv')
+df_low_preflood.to_csv('change_vh_20db_test2.csv')
 
 """"
 SHAPE FILE CREATION
@@ -294,7 +317,7 @@ df_change_points.to_csv('floodpoints_and_polygons_mean_change.csv')
 
 
 
-
+df_save[df_save["NDFI"]<=0.3]
 
 
 
