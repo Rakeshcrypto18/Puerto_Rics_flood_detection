@@ -83,9 +83,12 @@ bbox3 = BBox(bbox=[-66.3386081,	18.46376767,	-66.2886081,	18.41876767], crs=CRS.
 bbox4 = BBox(bbox=[-66.2886081,	18.46376767,	-66.2386081,	18.41876767], crs=CRS.WGS84)
 bbox5 = BBox(bbox=[-66.2386081,	18.46376767,	-66.1886081,	18.41876767], crs=CRS.WGS84)
 
+bbox6 = BBox(bbox=[-66.71300914, 18.50403898,	-66.66300914,	18.45903898], crs=CRS.WGS84)
+bbox7 = BBox(bbox=[-66.66300914, 18.50403898, -66.61300914, 18.45903898], crs=CRS.WGS84)
+
 # resolution = 10
-# size5 = bbox_to_dimensions(bbox5, resolution=resolution)
-# size5
+# size6 = bbox_to_dimensions(bbox6, resolution=resolution)
+# size6
 
 # print(f"Image shape at {resolution} m resolution: {size5} pixels")
 #sizes currently getting this from process builder but need to automate i think above commented out code is a way to do this
@@ -94,6 +97,9 @@ size2 = [528.0843937852881, 500.93770856969985]
 size3 = [528.0843937852881, 500.93770856969985]
 size4 = [528.0843937854222, 500.93770856969985]
 size5 = [528.0843937852881, 500.93770856969985]
+
+size6 = [527.9606554502335, 500.9377085697706]
+size7 = [527.9606554502335, 500.9377085697706]
 
 #old
 # namming convention
@@ -120,7 +126,7 @@ postflood2 = ('2017-09-25', '2017-09-28')
 
 #request
 request = SentinelHubRequest(
-    data_folder="preflood3_04", #this is changing every pull <---- MODIFY ME  
+    data_folder="preflood3_07", #this is changing every pull <---- MODIFY ME  
     evalscript=evalscriptVHVV_decible,
     input_data=[
         SentinelHubRequest.input_data(
@@ -134,8 +140,8 @@ request = SentinelHubRequest(
     responses=[
         SentinelHubRequest.output_response('default', MimeType.TIFF),
     ],
-    bbox=bbox4, #chnaging depending on cell <---- MODIFY ME 
-    size=size4, #chnaging depending on cell <---- MODIFY ME 
+    bbox=bbox7, #chnaging depending on cell <---- MODIFY ME 
+    size=size7, #chnaging depending on cell <---- MODIFY ME 
     config=config
 )
 """
