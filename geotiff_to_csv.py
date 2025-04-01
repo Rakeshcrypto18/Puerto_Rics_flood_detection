@@ -11,11 +11,11 @@ import pandas as pd
 read pre and post flood images
 """
 #MODIFY ME
-preflood1_tiff = 'NDFI_NDFVI_tiffs/preflood1_05.tiff'
-preflood2_tiff = 'NDFI_NDFVI_tiffs/preflood2_05.tiff'
-preflood3_tiff = 'NDFI_NDFVI_tiffs/preflood3_05.tiff'
-postflood1_tiff = 'NDFI_NDFVI_tiffs/postflood1_05.tiff'
-postflood2_tiff = 'NDFI_NDFVI_tiffs/postflood2_05.tiff'
+preflood1_tiff = 'NDFI_NDFVI_tiffs/preflood1_11.tiff'
+preflood2_tiff = 'NDFI_NDFVI_tiffs/preflood2_11.tiff'
+preflood3_tiff = 'NDFI_NDFVI_tiffs/preflood3_11.tiff'
+postflood1_tiff = 'NDFI_NDFVI_tiffs/postflood1_11.tiff'
+postflood2_tiff = 'NDFI_NDFVI_tiffs/postflood2_11.tiff'
 
 
 """"
@@ -123,7 +123,7 @@ df
 save to csv
 """
 #MODIFY ME
-df.to_csv('vv_05.csv')
+df.to_csv('vh_11.csv')
 
 
 

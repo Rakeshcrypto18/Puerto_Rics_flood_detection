@@ -1,0 +1,78 @@
+{
+    "request": {
+        "headers": {
+            "accept": "image/tiff",
+            "content-type": "application/json"
+        },
+        "payload": {
+            "evalscript": "\n//VERSION=3\nfunction setup() {\n  return {\n    input: [{\n      bands: [\"VV\", \"VH\", \"dataMask\"]  // \ud83c\udfaf Specify input bands required from Sentinel-1\n    }],\n    output: {\n      bands: 3,                       // \ud83d\udce4 Output will return 3 bands: [VH_dB, VV_dB, dataMask]\n      sampleType: \"FLOAT32\"          // \ud83d\udd22 Use 32-bit float precision (needed for dB values)\n    }\n  }\n}\n\n// \ud83c\udfaf For every pixel, this function will be executed\nfunction evaluatePixel(samples){\n   // Convert VH and VV values to decibels: dB = 10 * log10(value)\n   // Note: Using Math.log(x) / Math.LN10 instead of log10() for compatibility\n   let decibelsvh = [10 * Math.log(samples.VH) / Math.LN10]  // Band 0 \u2192 VH in dB\n   let decibelsvv = [10 * Math.log(samples.VV) / Math.LN10]  // Band 1 \u2192 VV in dB\n\n   // Return all three bands per pixel\n   return [decibelsvh, decibelsvv, samples.dataMask]         // Band 2 \u2192 dataMask\n}\n",
+            "input": {
+                "bounds": {
+                    "bbox": [
+                        -66.71300914,
+                        18.41403898,
+                        -66.66300914,
+                        18.45903898
+                    ],
+                    "properties": {
+                        "crs": "http://www.opengis.net/def/crs/EPSG/0/4326"
+                    }
+                },
+                "data": [
+                    {
+                        "dataFilter": {
+                            "acquisitionMode": "IW",
+                            "mosaickingOrder": "mostRecent",
+                            "polarization": "DV",
+                            "resolution": "HIGH",
+                            "timeRange": {
+                                "from": "2017-09-01T00:00:00Z",
+                                "to": "2017-09-06T23:59:59Z"
+                            }
+                        },
+                        "processing": {
+                            "backCoeff": "GAMMA0_TERRAIN",
+                            "demInstance": "COPERNICUS",
+                            "orthorectify": true,
+                            "speckleFilter": {
+                                "type": "LEE",
+                                "windowSizeX": 3,
+                                "windowSizeY": 3
+                            }
+                        },
+                        "type": "sentinel-1-grd"
+                    }
+                ]
+            },
+            "output": {
+                "height": 505,
+                "responses": [
+                    {
+                        "format": {
+                            "type": "image/tiff"
+                        },
+                        "identifier": "default"
+                    }
+                ],
+                "width": 522
+            }
+        },
+        "timestamp": "2025-03-31T09:25:14.116020",
+        "url": "https://sh.dataspace.copernicus.eu/api/v1/process"
+    },
+    "response": {
+        "elapsed": 6.893054,
+        "headers": {
+            "access-control-allow-credentials": "true",
+            "access-control-allow-headers": "origin,content-type,accept,accept-crs,authorization,cache-control",
+            "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS, HEAD, PATCH",
+            "access-control-allow-origin": "*",
+            "access-control-max-age": "3600",
+            "content-type": "image/tiff",
+            "date": "Mon, 31 Mar 2025 13:25:02 GMT",
+            "transfer-encoding": "chunked",
+            "x-processingunits-spent": "6.703949174402624"
+        },
+        "status_code": 200
+    }
+}
