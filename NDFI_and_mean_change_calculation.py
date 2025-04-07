@@ -46,8 +46,7 @@ df5 = pd.read_csv('geotiff_csvs/vh_05.csv')
 """"
 concat all csv data into one csv to analyse
 """
-#df = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8, df9,df10])
-
+# df = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8, df9,df10])
 df = pd.concat([df1, df2, df3, df4, df5])
 df
 
@@ -86,9 +85,9 @@ df['DFI'] = df['min_post'] - df['mean_pre']
 df['DFVI'] = df['max_post'] - df['mean_pre']
 df
 
-df['NDFI'] = (df['DFI'] - df['DFI'].min())/(df['DFI'].max()-df['DFI'].min())
-df['NDFVI'] = (df['DFVI'] - df['DFVI'].min())/(df['DFVI'].max()-df['DFVI'].min())
-df
+# df['NDFI'] = (df['DFI'] - df['DFI'].min())/(df['DFI'].max()-df['DFI'].min())
+# df['NDFVI'] = (df['DFVI'] - df['DFVI'].min())/(df['DFVI'].max()-df['DFVI'].min())
+# df
 
 """"
 Classic chnage detection using mean vh values
@@ -102,8 +101,6 @@ the greater the change
 df_decrease = df[df['change']<0]
 df_decrease
 
-# df_decrease = df[df['DFI']<0]
-# df_decrease
 
 # filter for values that are less than 20 pre flood
 # we can change this value depending on threshold
@@ -113,16 +110,12 @@ df_low_preflood = df_decrease[df_decrease['mean_pre'] >= -16]
 df_low_preflood
 
 
-
-
 # filter for post flood vlaues that are now less than 20
 # we can change this value depending on threshold
 # this removes values that have a negative change but still have vh values above -20
 df_low_postflood = df_low_preflood[df_low_preflood['mean_post'] <= -16]
 df_low_postflood
 
-# df_low_postflood = df_low_preflood[df_low_preflood['mean_post'] <= -20]
-# df_low_postflood
 
 """"
 Save mean change values to a csv
@@ -136,27 +129,13 @@ Save mean change values to a csv
 """"
 SHAPE FILE CREATION
 """
-
-
 gdf = gpd.GeoDataFrame(
     df_low_postflood, geometry=gpd.points_from_xy(df_low_postflood.x, df_low_postflood.y), crs="EPSG:4326"
 )
 gdf
-
+#gdf_points = gdf
 
 #filter points within puertorico boundary (this eliminated ocean water from the model)
-# pr_map = gpd.read_file('puertoricoshape/pri_admbnda_adm0_2019.shp')
-# pr_map
-
-# pr_map = pr_map.explode()
-# pr_map
-
-# pr_map = pr_map.reset_index(drop=True)
-# pr_map = pr_map.reset_index()
-# pr_map
-
-#pr_map.to_file('puertoricoshape/pr_map.shp')
-
 pr_map = gpd.read_file('puertoricoshape/pr_map.shp')
 pr_map_main = pr_map[pr_map['index']==58]
 pr_map_main
@@ -169,8 +148,7 @@ polygon
 pip = gdf[gdf.geometry.within(polygon)]
 pip
 
-
-#chnage crs so we can buffer in meters
+#change crs so we can buffer in meters
 gdf = pip.to_crs(epsg=3857)
 gdf
 
@@ -202,58 +180,96 @@ gdf = gdf.explode()
 gdf = gdf.to_crs(epsg=4326)
 gdf
 
-#save current flood extent as shape file before fuzzy logic
-gdf.to_file('mean_change_16db.shp')
-
-
 """"
 asssign points to thier polygon
 """
-
 gdf2 = gdf.reset_index(drop=True)
 gdf2 = gdf2.reset_index()
+
+gdf2 = gdf2.rename(columns={'index': 'poly_id'})
 gdf2
 
-#for each point in df check if it is in the listed polygon if yes, add the polygon index
-#to a column in df
+#save current flood extent as shape file before fuzzy logic
+gdf2.to_file('mean_change_16db.shp')
+
+#for each point in df check if it is in the listed polygon if yes, add the polygon index to a column in df
 # df_change_points = gpd.GeoDataFrame(
 #     df_low_postflood, geometry=gpd.points_from_xy(df_low_postflood.x, df_low_postflood.y), crs="EPSG:4326"
 # )
 
 # pick first polygon, filter df_change_points for only points within that polygon, assign those points polygon as the index number
-#df_change_points['polygon_id'] = ''
 pip['polygon_id'] = ''
 mean_change_gdf=pip
 mean_change_gdf
+
+a_list = []
+b_list = []
 for index, row in gdf2.iterrows():
     polygon = row['geometry']
-    polygon_id = row['index']
+    polygon_id = row['poly_id']
     gdf_filtered = mean_change_gdf[mean_change_gdf['geometry'].within(polygon)]
     for i, r in gdf_filtered.iterrows():
         #if point in df chnage points is in gdf filtered then add polygon id
-        point = r['geometry']
-        pip = point.within(polygon) 
-        if pip == True:
-            mean_change_gdf.at[i,'polygon_id']=polygon_id
+        gdf_filtered.at[i,'polygon_id']=polygon_id
+        point = point = r['geometry']
+        a_list.append(polygon_id)
+        b_list.append(point)
+df_polygon = pd.DataFrame({'poly_id': a_list, 'point': b_list})
+df_polygon
 
-mean_change_gdf
-
-#left merge 
-join= pd.merge(mean_change_gdf, gdf2, left_on='polygon_id', right_on='index', how='left')
+join= pd.merge(mean_change_gdf, df_polygon, left_on='geometry', right_on='point', how='left')
 join
 
-
-mean_change_gdf.to_csv('floodpoints_and_polygons_mean_change_aoi116db.csv')
-
+join.to_csv('floodpoints_and_polygons_mean_change_aoi1_16db.csv')
 
 
-#df_save[df_save["NDFI"]<=0.3]
 
-
-""""
-calculate NDFI and NDVFI using values we just created
-*** not sure if NDVFI is working
 """
+archive
+"""
+# for index, row in gdf2.iterrows():
+#     polygon = row['geometry']
+#     polygon_id = row['poly_id']
+#     gdf_filtered = mean_change_gdf[mean_change_gdf['geometry'].within(polygon)]
+#     for i, r in gdf_filtered.iterrows():
+#         #if point in df chnage points is in gdf filtered then add polygon id
+#         point = r['geometry']
+#         pip = point.within(polygon) 
+#         print(i)
+#         if pip == True:
+#             mean_change_gdf.at[i,'polygon_id']=polygon_id
+# n=1
+# mean_change_gdf
+# for index, row in mean_change_gdf.iterrows():
+#     point = row['geometry']
+#     print(n)
+#     for i, r in gdf2.iterrows():
+#         polygon = r['geometry']
+#         polygon_id = r['poly_id']
+#         if polygon.contains(point):
+#             mean_change_gdf.at[index,'polygon_id']=polygon_id
+#             n=n+1 # Store the polygon ID
+#             break # Stop searching for other polygons for this point
+# 86825
+
+
+
+#left merge 
+# join= pd.merge(mean_change_gdf, gdf2, left_on='polygon_id', right_on='poly_id', how='left')
+# join
+
+# mean_change_gdf
+# mean_change_gdf.to_csv('floodpoints_and_polygons_mean_change_aoi116dbtest.csv')
+
+
+
+# #df_save[df_save["NDFI"]<=0.3]
+
+
+# """"
+# calculate NDFI and NDVFI using values we just created
+# *** not sure if NDVFI is working
+# """
 #old not working/not correct calculation
 # df['NDFI'] = (df['mean_pre']-(df['min_post']+df['min_pre']))/(df['mean_pre']+(df['min_post']+df['min_pre']))
 # df['NDFVI'] = ((df['max_post']+df['max_pre'])-df['mean_pre'])/((df['max_post']+df['max_pre'])+df['mean_pre'])
@@ -261,17 +277,17 @@ calculate NDFI and NDVFI using values we just created
 # values that became brighter reference flooded vegitation
 # they use the mean reference image for "normal" values and then take the min or max of the post flood to get the largest 
 # difference in the time series (most drastic change)
-df['DFI'] = df['min_post'] - df['mean_pre']
-df['DFVI'] = df['max_post'] - df['mean_pre']
-df
+# df['DFI'] = df['min_post'] - df['mean_pre']
+# df['DFVI'] = df['max_post'] - df['mean_pre']
+# df
 
-df['NDFI'] = (df['DFI'] - df['DFI'].min())/(df['DFI'].max()-df['DFI'].min())
-df['NDFVI'] = (df['DFVI'] - df['DFVI'].min())/(df['DFVI'].max()-df['DFVI'].min())
-df
+# df['NDFI'] = (df['DFI'] - df['DFI'].min())/(df['DFI'].max()-df['DFI'].min())
+# df['NDFVI'] = (df['DFVI'] - df['DFVI'].min())/(df['DFVI'].max()-df['DFVI'].min())
+# df
 
 
 
-df
+# df
 # #svae to csv?
 # #saving for exploration
 # df_save = df [['y', 'x','NDFI', 'DFI', 'NDFVI', 'DFVI', 'mean_post', 'mean_pre', 'change']]
