@@ -16,17 +16,23 @@ aerial1
 aerial_flood = gpd.read_file("testing_shapes/flod_extent_aoi1_aerial.shp")
 aerial_flood = aerial_flood.to_crs("EPSG:3857")
 
+
+aerial_flood["area"] = aerial_flood['geometry'].area
+aerial_flood = aerial_flood[aerial_flood['area']>=8093.71]
+
+aerial_flood.to_file('flood_1acre_test.shp')
+
 #our flood extent
-flood16 = gpd.read_file("flood_extent_shape_files/filtered_mean_change_on_fuzzy_logic_16db.shp")
+flood16 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_16db_1acre.shp")
 flood16 = flood16.to_crs("EPSG:3857")
-flood18 = gpd.read_file("flood_extent_shape_files/filtered_mean_change_on_fuzzy_logic_18db.shp")
+flood18 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_18db_1acre.shp")
 flood18 = flood18.to_crs("EPSG:3857")
-flood20 = gpd.read_file("flood_extent_shape_files/filtered_mean_change_on_fuzzy_logic_20db.shp")
+flood20 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_20db_1acre.shp")
 flood20 = flood20.to_crs("EPSG:3857")
 
-flood16 = flood16[flood16['combine']==2]
-flood18 = flood18[flood18['combine']==2]
-flood20 = flood20[flood20['combine']==2]
+# flood16 = flood16[flood16['combine']==2]
+# flood18 = flood18[flood18['combine']==2]
+# flood20 = flood20[flood20['combine']==2]
 
 
 """
@@ -61,9 +67,9 @@ flood_area16 = flood16.geometry.area.sum()
 flood_area18 = flood18.geometry.area.sum()
 flood_area20 = flood20.geometry.area.sum()
 
-flood_area16 #covers 70% of 5155945.647338487
-flood_area18 #covers 64% of 5155945.647338487
-flood_area20 #covers 42% of 5155945.647338487
+flood_area16 #covers 70% of 5155945.647338487 #66%
+flood_area18 #covers 64% of 5155945.647338487 #60%
+flood_area20 #covers 42% of 5155945.647338487 #36% of 5141784.173760725
 
 """
 extra remaining flood false negatives?
@@ -72,9 +78,9 @@ error16 = ((flood_area16-intersection_area16)/(flood_area16))*100
 error18 = ((flood_area18-intersection_area18)/(flood_area18))*100
 error20 = ((flood_area20-intersection_area20)/(flood_area20))*100
 
-error16 #42%
-error18 #42%
-error20 #48%
+error16 #42% #45%
+error18 #42% #39%
+error20 #48% #48%
 
 """
 test area 2
@@ -91,12 +97,16 @@ aerial2 = aerial2.to_crs("EPSG:3857")
 aerial_flood = gpd.read_file("testing_shapes/flood_extent_aoi2_aerial.shp")
 aerial_flood = aerial_flood.to_crs("EPSG:3857")
 
+aerial_flood["area"] = aerial_flood['geometry'].area
+aerial_flood = aerial_flood[aerial_flood['area']>=8093.71]
+aerial_flood.to_file('flood_1acre_test2.shp')
+
 #our flood extent
-flood16 = gpd.read_file("flood_extent_shape_files/filtered_mean_change_on_fuzzy_logic_new16db.shp")
+flood16 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_new16db_1acre.shp")
 flood16 = flood16.to_crs("EPSG:3857")
-flood18 = gpd.read_file("flood_extent_shape_files/filtered_mean_change_on_fuzzy_logic_new18db.shp")
+flood18 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_new18db_1acre.shp")
 flood18 = flood18.to_crs("EPSG:3857")
-flood20 = gpd.read_file("flood_extent_shape_files/filtered_mean_change_on_fuzzy_logic_new20db.shp")
+flood20 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_new20db_1acre.shp")
 flood20 = flood20.to_crs("EPSG:3857")
 
 flood16 = flood16[flood16['combine']==2]
@@ -147,9 +157,9 @@ flood_area16 = flood16.geometry.area.sum()
 flood_area18 = flood18.geometry.area.sum()
 flood_area20 = flood20.geometry.area.sum()
 
-flood_area16 #covers 74% of 1796052.4258707738
-flood_area18 #covers 54% of 1796052.4258707738
-flood_area20 #covers 34% of 1796052.4258707738
+flood_area16 #covers 74% of 1796052.4258707738  # 75%  1788188.9649758004
+flood_area18 #covers 54% of 1796052.4258707738  # 50%
+flood_area20 #covers 34% of 1796052.4258707738  # 37%
 
 """
 extra remaining flood false negatives?
@@ -158,6 +168,6 @@ error16 = ((flood_area16-intersection_area16)/(flood_area16))*100
 error18 = ((flood_area18-intersection_area18)/(flood_area18))*100
 error20 = ((flood_area20-intersection_area20)/(flood_area20))*100
 
-error16 #82%
-error18 #71%
-error20 #68%
+error16 #82% #89%
+error18 #71% #67%
+error20 #68% #75%

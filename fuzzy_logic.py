@@ -12,12 +12,13 @@ well start with the mean change flood extent
 
 read df change points and mean chnage shape file
 """
-df_change_points = pd.read_csv('floodpoints_and_polygons_mean_change_aoi116db.csv')
+#need to run 18 again in ndfi
+df_change_points = pd.read_csv('flood_extent_shape_files/floodpoints_and_polygons_mean_change_aoi216db.csv')
 df_change_points
 
 #small size fuzzy logic
 df_small_size = df_change_points.groupby('polygon_id').size().reset_index(name='point_counts')
-df_small_size
+
 
 #minimal change fuzzy logic
 df_change_points['mean_polygon_change'] = df_change_points.groupby('polygon_id')['change'].transform(lambda x: x.mean())
@@ -37,7 +38,7 @@ df_change_points
 #to_gdf = df_change_points[df_change_points['mean_polygon_change'] <= -3]
 
 # Specify the path to the shapefile
-shapefile_path = "mean_change_16db.shp"
+shapefile_path = "flood_extent_shape_files/mean_change_new16db.shp"
 
 # Read the shapefile into a GeoDataFrame
 gdf = gpd.read_file(shapefile_path)
@@ -45,22 +46,40 @@ gdf = gpd.read_file(shapefile_path)
 to_gdf= pd.merge(df_change_points,df_small_size, on='polygon_id', how = 'left')
 to_gdf = to_gdf.drop_duplicates(subset=['polygon_id'], keep='first')
 to_gdf.columns
+# to_gdf
 
-gdf2= to_gdf[['mean_polygon_change', 'point_counts', 'polygon_id', 'mean_polygon_slope']] #
+gdf2= to_gdf[['mean_polygon_change', 'polygon_id', 'point_counts']] #, 'mean_polygon_slope'
 gdf2
 
 gdf_info= pd.merge(gdf2,gdf, left_on='polygon_id', right_on='FID', how = 'left')
 gdf_info
 
-gdf_info['large_enough'] = np.where(gdf_info['point_counts']>=100, 1, 0)
+#convert to geopandas dataframe and calculate area of flood
+gdf_info = gpd.GeoDataFrame(gdf_info, geometry='geometry', crs="EPSG:4326")
+gdf_info = gdf_info.to_crs("EPSG:3857")
+
+gdf_info["area"] = gdf_info['geometry'].area
+
+gdf_info = gdf_info.to_crs("EPSG:4326")
+gdf_info.columns
+
+gdf_info
+
+gdf_info['large_enough2'] = np.where(gdf_info['point_counts']>=100, 1, 0)
+gdf_info['large_enough'] = np.where(gdf_info['area']>=8093.71, 1, 0)
 gdf_info['change_enough'] = np.where(gdf_info['mean_polygon_change']<=-3, 1, 0)
-gdf_info['slope_enough'] = np.where(gdf_info['mean_polygon_slope']<=5, 1, 0)
-gdf_info['combine'] = gdf_info['large_enough'] + gdf_info['change_enough'] 
-gdf_info_filter = gdf_info[gdf_info['combine']>=0]
-gdf_info_filter.columns
+#gdf_info['slope_enough'] = np.where(gdf_info['mean_polygon_slope']<=5, 1, 0)
+gdf_info['combine'] = gdf_info['large_enough'] + gdf_info['change_enough']+gdf_info['large_enough2'] #+gdf_info['slope_enough']
+gdf_info_filter = gdf_info[gdf_info['combine']==3]
+gdf_info_filter
+
+# gdf_info = gdf_info[['point_counts', 'large_enough2', 'area', 'large_enough', 'polygon_id']]
+# gdf_info[gdf_info['polygon_id']==220]
+# gdf_info.columns
+
 
 gdf = gpd.GeoDataFrame(gdf_info_filter, geometry='geometry', crs="EPSG:4326")
-gdf.to_file('filtered_mean_change_on_fuzzy_logic_16db.shp')
+gdf.to_file('filtered_mean_change_on_fuzzy_logic_new16db_2acre.shp')
 
 
 
