@@ -102,17 +102,17 @@ aerial_flood = aerial_flood[aerial_flood['area']>=8093.71]
 aerial_flood.to_file('flood_1acre_test2.shp')
 
 #our flood extent
-flood16 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi2_16db.shp")
+flood16 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi1_16db_test.shp")
 flood16 = flood16.to_crs("EPSG:3857")
 flood18 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi2_18db.shp")
 flood18 = flood18.to_crs("EPSG:3857")
 flood20 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi2_20db.shp")
 flood20 = flood20.to_crs("EPSG:3857")
 
-# flood16 = flood16[flood16['combine']==2]
+flood16 = flood16[flood16['combine']==3]
 # flood18 = flood18[flood18['combine']==2]
 # flood20 = flood20[flood20['combine']==2]
-
+flood16
 """
 Only use flood polygons that are in the same area we have aerial photos
 """
@@ -157,7 +157,7 @@ flood_area16 = flood16.geometry.area.sum()
 flood_area18 = flood18.geometry.area.sum()
 flood_area20 = flood20.geometry.area.sum()
 
-flood_area16 #covers 72% of 1788188.9649758004  
+flood_area16 #covers 72% of 1788188.9649758004  71%
 flood_area18 #covers 54% of 
 flood_area20 #covers 34% of   
 
@@ -168,6 +168,6 @@ error16 = ((flood_area16-intersection_area16)/(flood_area16))*100
 error18 = ((flood_area18-intersection_area18)/(flood_area18))*100
 error20 = ((flood_area20-intersection_area20)/(flood_area20))*100
 
-error16 #78%
+error16 #78% %76
 error18 #69%
 error20 #64%

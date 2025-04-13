@@ -20,22 +20,22 @@ import geopandas as gpd
 """"
 load in csv data
 """
-# df1 = pd.read_csv('geotiff_csvs/vh_06.csv')
-# df2 = pd.read_csv('geotiff_csvs/vh_07.csv')
-# df3 = pd.read_csv('geotiff_csvs/vh_08.csv')
-# df4 = pd.read_csv('geotiff_csvs/vh_09.csv')
-# df5 = pd.read_csv('geotiff_csvs/vh_10.csv')
-# df6 = pd.read_csv('geotiff_csvs/vh_11.csv')
-# df7 = pd.read_csv('geotiff_csvs/vh_12.csv')
-# df8 = pd.read_csv('geotiff_csvs/vh_13.csv')
-# df9 = pd.read_csv('geotiff_csvs/vh_14.csv')
-# df10 = pd.read_csv('geotiff_csvs/vh_15.csv')
+df1 = pd.read_csv('geotiff_csvs/vh_06.csv')
+df2 = pd.read_csv('geotiff_csvs/vh_07.csv')
+df3 = pd.read_csv('geotiff_csvs/vh_08.csv')
+df4 = pd.read_csv('geotiff_csvs/vh_09.csv')
+df5 = pd.read_csv('geotiff_csvs/vh_10.csv')
+df6 = pd.read_csv('geotiff_csvs/vh_11.csv')
+df7 = pd.read_csv('geotiff_csvs/vh_12.csv')
+df8 = pd.read_csv('geotiff_csvs/vh_13.csv')
+df9 = pd.read_csv('geotiff_csvs/vh_14.csv')
+df10 = pd.read_csv('geotiff_csvs/vh_15.csv')
 
-df1 = pd.read_csv('geotiff_csvs/vh_01.csv')
-df2 = pd.read_csv('geotiff_csvs/vh_02.csv')
-df3 = pd.read_csv('geotiff_csvs/vh_03.csv')
-df4 = pd.read_csv('geotiff_csvs/vh_04.csv')
-df5 = pd.read_csv('geotiff_csvs/vh_05.csv')
+# df1 = pd.read_csv('geotiff_csvs/vh_01.csv')
+# df2 = pd.read_csv('geotiff_csvs/vh_02.csv')
+# df3 = pd.read_csv('geotiff_csvs/vh_03.csv')
+# df4 = pd.read_csv('geotiff_csvs/vh_04.csv')
+# df5 = pd.read_csv('geotiff_csvs/vh_05.csv')
 
 # df1 = pd.read_csv('geotiff_csvs/vv_01.csv')
 # df2 = pd.read_csv('geotiff_csvs/vv_02.csv')
@@ -46,9 +46,9 @@ df5 = pd.read_csv('geotiff_csvs/vh_05.csv')
 """"
 concat all csv data into one csv to analyse
 """
-# df = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8, df9,df10])
-df = pd.concat([df1, df2, df3, df4, df5])
-df
+df = pd.concat([df1, df2, df3, df4, df5, df6, df7, df8, df9,df10])
+# df = pd.concat([df1, df2, df3, df4, df5])
+# df
 
 
 """"
@@ -98,7 +98,7 @@ the greater the change
 """
 
 #filter to only have data points that have decreased vh values
-df_decrease = df[df['change']<0]
+df_decrease = df[df['change']< -3]
 df_decrease
 
 
@@ -138,7 +138,6 @@ gdf
 #filter points within puertorico boundary (this eliminated ocean water from the model)
 pr_map = gpd.read_file('puertoricoshape/pr_map.shp')
 pr_map_main = pr_map[pr_map['index']==58]
-pr_map_main
 
 polygon = pr_map_main.iloc[0].geometry
 polygon
@@ -151,6 +150,8 @@ pip
 #change crs so we can buffer in meters
 gdf = pip.to_crs(epsg=3857)
 gdf
+
+
 
 #create buffer so points will overlap
 buffer_distance = 11
@@ -190,7 +191,7 @@ gdf2 = gdf2.rename(columns={'index': 'poly_id'})
 gdf2
 
 #save current flood extent as shape file before fuzzy logic
-gdf2.to_file('mean_change_16db.shp')
+gdf2.to_file('mean_change_16db_test.shp')
 
 #for each point in df check if it is in the listed polygon if yes, add the polygon index to a column in df
 # df_change_points = gpd.GeoDataFrame(
@@ -220,7 +221,8 @@ df_polygon
 join= pd.merge(mean_change_gdf, df_polygon, left_on='geometry', right_on='point', how='left')
 join
 
-join.to_csv('floodpoints_and_polygons_mean_change_aoi1_16db.csv')
+
+join.to_csv('floodpoints_and_polygons_mean_change_aoi1_16db_test.csv')
 
 
 
