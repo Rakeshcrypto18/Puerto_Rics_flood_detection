@@ -20,7 +20,7 @@ aerial_flood = aerial_flood.to_crs("EPSG:3857")
 aerial_flood["area"] = aerial_flood['geometry'].area
 aerial_flood = aerial_flood[aerial_flood['area']>=8093.71]
 
-aerial_flood.to_file('flood_1acre_test.shp')
+#aerial_flood.to_file('flood_1acre_test.shp')
 
 #our flood extent
 flood16 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi1_16db.shp")
@@ -30,10 +30,9 @@ flood18 = flood18.to_crs("EPSG:3857")
 flood20 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi1_20db.shp")
 flood20 = flood20.to_crs("EPSG:3857")
 
-# flood16 = flood16[flood16['combine']==2]
-# flood18 = flood18[flood18['combine']==2]
-# flood20 = flood20[flood20['combine']==2]
-
+flood16 = flood16[flood16['combine']==3]
+flood18 = flood18[flood18['combine']==3]
+flood20 = flood20[flood20['combine']==3]
 
 """
 percent overlap
@@ -67,9 +66,9 @@ flood_area16 = flood16.geometry.area.sum()
 flood_area18 = flood18.geometry.area.sum()
 flood_area20 = flood20.geometry.area.sum()
 
-flood_area16 #covers 66% of 5141784.173760725
-flood_area18 #covers 59% of 5141784.173760725 
-flood_area20 #covers 33% of 5141784.173760725 
+flood_area16 #covers 70% of 5141784.173760725
+flood_area18 #covers 65% of 5141784.173760725 
+flood_area20 #covers 44% of 5141784.173760725 
 
 """
 extra remaining flood false negatives?
@@ -78,9 +77,9 @@ error16 = ((flood_area16-intersection_area16)/(flood_area16))*100
 error18 = ((flood_area18-intersection_area18)/(flood_area18))*100
 error20 = ((flood_area20-intersection_area20)/(flood_area20))*100
 
-error16 #34%
-error18 #34%
-error20 #47%
+error16 #39%
+error18 #38%
+error20 #46%
 
 """
 test area 2
@@ -102,17 +101,17 @@ aerial_flood = aerial_flood[aerial_flood['area']>=8093.71]
 aerial_flood.to_file('flood_1acre_test2.shp')
 
 #our flood extent
-flood16 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi1_16db_test.shp")
+flood16 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi2_16db.shp")
 flood16 = flood16.to_crs("EPSG:3857")
 flood18 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi2_18db.shp")
 flood18 = flood18.to_crs("EPSG:3857")
 flood20 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi2_20db.shp")
 flood20 = flood20.to_crs("EPSG:3857")
 
-flood16 = flood16[flood16['combine']==3]
-# flood18 = flood18[flood18['combine']==2]
-# flood20 = flood20[flood20['combine']==2]
-flood16
+flood16 = flood16[flood16['combine']==2]
+flood18 = flood18[flood18['combine']==2]
+flood20 = flood20[flood20['combine']==2]
+
 """
 Only use flood polygons that are in the same area we have aerial photos
 """
@@ -128,7 +127,6 @@ flood20 = flood20.dropna()
 """
 percent overlap
 """
-
 intersection16 = gpd.overlay(aerial_flood, flood16, how='intersection')
 intersection18 = gpd.overlay(aerial_flood, flood18, how='intersection')
 intersection20 = gpd.overlay(aerial_flood, flood20, how='intersection')
@@ -157,9 +155,9 @@ flood_area16 = flood16.geometry.area.sum()
 flood_area18 = flood18.geometry.area.sum()
 flood_area20 = flood20.geometry.area.sum()
 
-flood_area16 #covers 72% of 1788188.9649758004  71%
-flood_area18 #covers 54% of 
-flood_area20 #covers 34% of   
+flood_area16 #covers 74% of 1788188.9649758004 
+flood_area18 #covers 59% of 1788188.9649758004 
+flood_area20 #covers 37% of 1788188.9649758004 
 
 """
 extra remaining flood false negatives?
@@ -168,6 +166,6 @@ error16 = ((flood_area16-intersection_area16)/(flood_area16))*100
 error18 = ((flood_area18-intersection_area18)/(flood_area18))*100
 error20 = ((flood_area20-intersection_area20)/(flood_area20))*100
 
-error16 #78% %76
-error18 #69%
-error20 #64%
+error16 #77%
+error18 #80%
+error20 #84%
