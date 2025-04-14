@@ -1,0 +1,69 @@
+{
+    "request": {
+        "headers": {
+            "accept": "image/tiff",
+            "content-type": "application/json"
+        },
+        "payload": {
+            "evalscript": "\n//VERSION=3\nfunction setup() {\n  return {\n    input: [\n      {\n        bands: [\"DEM\",\"dataMask\"],                  \n      }\n    ],\n    output: [\n      {\n        id: \"default\",\n        bands: 2,\n        sampleType: \"FLOAT32\",        \n      },    \n    ],\n    mosaicking: \"SIMPLE\",\n  };\n}\nfunction evaluatePixel(sample) {\n  return [sample.DEM]\n}\n",
+            "input": {
+                "bounds": {
+                    "bbox": [
+                        -66.61300914,
+                        18.45903898,
+                        -66.56300914,
+                        18.50403898
+                    ],
+                    "properties": {
+                        "crs": "http://www.opengis.net/def/crs/EPSG/0/4326"
+                    }
+                },
+                "data": [
+                    {
+                        "dataFilter": {
+                            "demInstance": "COPERNICUS_30",
+                            "timeRange": {
+                                "from": "2017-09-20T00:00:00Z",
+                                "to": "2017-09-28T23:59:59Z"
+                            }
+                        },
+                        "processing": {
+                            "downsampling": "NEAREST",
+                            "upsampling": "NEAREST"
+                        },
+                        "type": "dem"
+                    }
+                ]
+            },
+            "output": {
+                "height": 500.9377085697706,
+                "responses": [
+                    {
+                        "format": {
+                            "type": "image/tiff"
+                        },
+                        "identifier": "default"
+                    }
+                ],
+                "width": 527.9606554502335
+            }
+        },
+        "timestamp": "2025-04-14T19:24:01.304298",
+        "url": "https://sh.dataspace.copernicus.eu/api/v1/process"
+    },
+    "response": {
+        "elapsed": 0.851995,
+        "headers": {
+            "access-control-allow-credentials": "true",
+            "access-control-allow-headers": "origin,content-type,accept,accept-crs,authorization,cache-control",
+            "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS, HEAD, PATCH",
+            "access-control-allow-origin": "*",
+            "access-control-max-age": "3600",
+            "content-type": "image/tiff",
+            "date": "Mon, 14 Apr 2025 23:23:59 GMT",
+            "transfer-encoding": "chunked",
+            "x-processingunits-spent": "0.6701151729657795"
+        },
+        "status_code": 200
+    }
+}
