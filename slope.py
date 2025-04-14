@@ -5,10 +5,10 @@ import pandas as pd
 from tqdm import tqdm
 
 # Input folder containing TIFFs
-input_dir = "/Users/rakesh/Desktop/DEM_tiff_1_5"
-
+#input_dir = "/Users/rakesh/Desktop/DEM_tiff_1_5"
+input_dir = "dem_tifs"
 # Output CSV path
-output_csv = "/Users/rakesh/Desktop/DEM_multi_slope_output.csv"
+output_csv = "slope_output.csv"
 
 def calculate_slope(dem_array, transform):
     # Approximate pixel resolution in meters

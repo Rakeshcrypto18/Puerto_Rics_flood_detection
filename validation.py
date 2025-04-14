@@ -23,16 +23,13 @@ aerial_flood = aerial_flood[aerial_flood['area']>=8093.71]
 #aerial_flood.to_file('flood_1acre_test.shp')
 
 #our flood extent
-flood16 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi1_16db.shp")
+flood16 = gpd.read_file("final_flood_extent/filtered_mean_change_on_fuzzy_logic_aoi1_16db.shp")
 flood16 = flood16.to_crs("EPSG:3857")
-flood18 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi1_18db.shp")
+flood18 = gpd.read_file("final_flood_extent/filtered_mean_change_on_fuzzy_logic_aoi1_18db.shp")
 flood18 = flood18.to_crs("EPSG:3857")
-flood20 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi1_20db.shp")
+flood20 = gpd.read_file("final_flood_extent/filtered_mean_change_on_fuzzy_logic_aoi1_20db.shp")
 flood20 = flood20.to_crs("EPSG:3857")
 
-flood16 = flood16[flood16['combine']==3]
-flood18 = flood18[flood18['combine']==3]
-flood20 = flood20[flood20['combine']==3]
 
 """
 percent overlap
@@ -98,19 +95,16 @@ aerial_flood = aerial_flood.to_crs("EPSG:3857")
 
 aerial_flood["area"] = aerial_flood['geometry'].area
 aerial_flood = aerial_flood[aerial_flood['area']>=8093.71]
-aerial_flood.to_file('flood_1acre_test2.shp')
+#aerial_flood.to_file('flood_1acre_test2.shp')
 
 #our flood extent
-flood16 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi2_16db.shp")
+flood16 = gpd.read_file("final_flood_extent/filtered_mean_change_on_fuzzy_logic_aoi2_16db.shp")
 flood16 = flood16.to_crs("EPSG:3857")
-flood18 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi2_18db.shp")
+flood18 = gpd.read_file("final_flood_extent/filtered_mean_change_on_fuzzy_logic_aoi2_18db.shp")
 flood18 = flood18.to_crs("EPSG:3857")
-flood20 = gpd.read_file("filtered_mean_change_on_fuzzy_logic_aoi2_20db.shp")
+flood20 = gpd.read_file("final_flood_extent/filtered_mean_change_on_fuzzy_logic_aoi2_20db.shp")
 flood20 = flood20.to_crs("EPSG:3857")
 
-flood16 = flood16[flood16['combine']==2]
-flood18 = flood18[flood18['combine']==2]
-flood20 = flood20[flood20['combine']==2]
 
 """
 Only use flood polygons that are in the same area we have aerial photos
@@ -166,6 +160,6 @@ error16 = ((flood_area16-intersection_area16)/(flood_area16))*100
 error18 = ((flood_area18-intersection_area18)/(flood_area18))*100
 error20 = ((flood_area20-intersection_area20)/(flood_area20))*100
 
-error16 #77%
-error18 #80%
-error20 #84%
+error16 #78%
+error18 #71%
+error20 #69%

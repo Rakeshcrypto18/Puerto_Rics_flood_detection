@@ -78,11 +78,35 @@ bbox3 = BBox(bbox=[-66.3386081,	18.46376767,	-66.2886081,	18.41876767], crs=CRS.
 bbox4 = BBox(bbox=[-66.2886081,	18.46376767,	-66.2386081,	18.41876767], crs=CRS.WGS84)
 bbox5 = BBox(bbox=[-66.2386081,	18.46376767,	-66.1886081,	18.41876767], crs=CRS.WGS84)
 
+
+bbox6 = BBox(bbox=[-66.71300914,	18.50403898,	-66.66300914,	18.45903898], crs=CRS.WGS84)
+bbox7 = BBox(bbox=[-66.71300914,	18.45903898,	-66.66300914,	18.41403898], crs=CRS.WGS84)
+bbox8 = BBox(bbox=[-66.71300914,	18.41403898,	-66.66300914,	18.36903898], crs=CRS.WGS84)
+bbox9 = BBox(bbox=[-66.66300914,	18.50403898,	-66.61300914,	18.45903898], crs=CRS.WGS84)
+bbox10 = BBox(bbox=[-66.66300914,	18.45903898,	-66.61300914,	18.41403898], crs=CRS.WGS84)
+bbox11 = BBox(bbox=[-66.66300914,	18.41403898,	-66.61300914,	18.36903898], crs=CRS.WGS84)
+bbox12 = BBox(bbox=[-66.61300914,	18.50403898,	-66.56300914,	18.45903898], crs=CRS.WGS84)
+bbox13 = BBox(bbox=[-66.61300914,	18.45903898,	-66.56300914,	18.41403898], crs=CRS.WGS84)
+bbox14 = BBox(bbox=[-66.61300914,	18.41403898,	-66.56300914,	18.36903898], crs=CRS.WGS84)
+bbox15 = BBox(bbox=[-66.56300914,	18.50403898,	-66.51300914,	18.45903898], crs=CRS.WGS84)
+
+
 size1 = [528.0843937854222, 500.93770856969985]
 size2 = [528.0843937852881, 500.93770856969985]
 size3 = [528.0843937852881, 500.93770856969985]
 size4 = [528.0843937854222, 500.93770856969985]
 size5 = [528.0843937852881, 500.93770856969985]
+
+size6 = [527.9606554502335, 500.9377085697706]
+size7 = [528.0989061273101, 500.93770856969985]
+size8 = [528.2368310464356, 500.9377085697706]
+size9 = [527.9606554502335, 500.9377085697706]
+size10 = [528.0989061273101, 500.93770856969985]
+size11 = [528.2368310464356, 500.9377085697706]
+size12 = [527.9606554502335, 500.9377085697706]
+size13 = [528.0989061273101, 500.93770856969985]
+size14 = [528.2368310464356, 500.9377085697706]
+size15 = [527.9606554503678, 500.9377085697706]
 
 # namming convention
 # preflood_VV_gridnumber
@@ -96,7 +120,7 @@ size5 = [528.0843937852881, 500.93770856969985]
 
 
 request = SentinelHubRequest(
-    data_folder="postflood_dem_05", #this is changing every pull
+    data_folder="dem_15", #this is changing every pull
     evalscript=evalscriptdem,
     input_data=[
         SentinelHubRequest.input_data(
@@ -110,12 +134,10 @@ request = SentinelHubRequest(
     responses=[
         SentinelHubRequest.output_response('default', MimeType.TIFF),
     ],
-    bbox=bbox5,
-    size=size5,
+    bbox=bbox15,
+    size=size15,
     config=config
 )
-
-request.get_data()
 
 """
 save geotiff to folder
@@ -129,26 +151,4 @@ for folder, _, filenames in os.walk(request.data_folder):
 
 layer
 
-
-#old api request for comparison
-
-# request = SentinelHubRequest(
-#     data_folder="preflood_VH_05", #this is changing every pull
-#     evalscript=evalscriptVH_decible,
-#     input_data=[
-#         SentinelHubRequest.input_data(
-#             data_collection=DataCollection.SENTINEL1_IW.define_from(
-#                     "s1iw", service_url=config.sh_base_url
-#                 ),          
-#             time_interval=('2017-09-01', '2017-09-16'), #this is chnaging depending on pre or post flood         
-#             other_args={"dataFilter": {"mosaickingOrder": "mostRecent"},"processing": {"backCoeff": "GAMMA0_TERRAIN","orthorectify": True,"demInstance": "COPERNICUS","speckleFilter": {"type": "LEE","windowSizeX": 3,"windowSizeY": 3}}}
-#         ),
-#     ],
-#     responses=[
-#         SentinelHubRequest.output_response('default', MimeType.TIFF),
-#     ],
-#     bbox=bbox5,
-#     size=size5,
-#     config=config
-# )
 
