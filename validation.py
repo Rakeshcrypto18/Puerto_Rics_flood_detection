@@ -13,7 +13,9 @@ load shapes
 aerial1 =  gpd.read_file("testing_shapes/test_area_1.shp")
 aerial1
 #aerial flood extent
-aerial_flood = gpd.read_file("testing_shapes/flod_extent_aoi1_aerial.shp")
+aerial_flood = gpd.read_file("testing_shapes/aoi1_final_test_flood.shp")
+aerial_flood = aerial_flood.explode()
+aerial_flood
 aerial_flood = aerial_flood.to_crs("EPSG:3857")
 
 
@@ -63,9 +65,9 @@ flood_area16 = flood16.geometry.area.sum()
 flood_area18 = flood18.geometry.area.sum()
 flood_area20 = flood20.geometry.area.sum()
 
-flood_area16 #covers 70% of 5141784.173760725
-flood_area18 #covers 65% of 5141784.173760725 
-flood_area20 #covers 44% of 5141784.173760725 
+flood_area16 #covers 62% of 6648736.131199692
+flood_area18 #covers 56% of 6648736.131199692
+flood_area20 #covers 37% of 6648736.131199692 
 
 """
 extra remaining flood false negatives?
@@ -74,9 +76,9 @@ error16 = ((flood_area16-intersection_area16)/(flood_area16))*100
 error18 = ((flood_area18-intersection_area18)/(flood_area18))*100
 error20 = ((flood_area20-intersection_area20)/(flood_area20))*100
 
-error16 #39%
-error18 #38%
-error20 #46%
+error16 #29%
+error18 #31%
+error20 #40%
 
 """
 test area 2
@@ -90,7 +92,7 @@ aerial2 =  gpd.read_file("testing_shapes/test_area_2.shp")
 aerial2
 aerial2 = aerial2.to_crs("EPSG:3857")
 #aerial flood extent
-aerial_flood = gpd.read_file("testing_shapes/flood_extent_aoi2_aerial.shp")
+aerial_flood = gpd.read_file("testing_shapes/aoi2_final_test_flood.shp")
 aerial_flood = aerial_flood.to_crs("EPSG:3857")
 
 aerial_flood["area"] = aerial_flood['geometry'].area
@@ -149,9 +151,9 @@ flood_area16 = flood16.geometry.area.sum()
 flood_area18 = flood18.geometry.area.sum()
 flood_area20 = flood20.geometry.area.sum()
 
-flood_area16 #covers 74% of 1788188.9649758004 
-flood_area18 #covers 59% of 1788188.9649758004 
-flood_area20 #covers 37% of 1788188.9649758004 
+flood_area16 #covers 71% of 2013462.7799295655
+flood_area18 #covers 55% of 2013462.7799295655 
+flood_area20 #covers 33% of 2013462.7799295655
 
 """
 extra remaining flood false negatives?
@@ -160,6 +162,6 @@ error16 = ((flood_area16-intersection_area16)/(flood_area16))*100
 error18 = ((flood_area18-intersection_area18)/(flood_area18))*100
 error20 = ((flood_area20-intersection_area20)/(flood_area20))*100
 
-error16 #78%
-error18 #71%
-error20 #69%
+error16 #75%
+error18 #79%
+error20 #84%
