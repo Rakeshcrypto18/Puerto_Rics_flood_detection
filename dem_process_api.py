@@ -1,4 +1,8 @@
 """
+The DEM process API script collects DEM values for the area of interest which can bes used to calculate slope
+"""
+
+"""
 first install necessary imports
 may need to run a pip install on machine or create virtual environment
 """
@@ -23,7 +27,7 @@ from sentinelhub import (
 )
 
 """
-connecto to sentinel 1 processing API and create configuration
+connect to to sentinel 1 processing API and create configuration
 need client ID and client secret from copernicus dashboard to connect
 """
 
@@ -31,8 +35,8 @@ from sentinelhub import SHConfig
 
 
 config = SHConfig()
-config.sh_client_id = 'sh-ac01828e-eb8f-4ff4-b9de-7630c5312236'
-config.sh_client_secret = '2NHA7aykyeBqu3NZnrI7n9eVU5NU8oFb'
+config.sh_client_id = '<client id>' # key is given to user by copernicus
+config.sh_client_secret = '<client secret>' # key is given to user by copernicus
 config.sh_base_url = 'https://sh.dataspace.copernicus.eu'
 config.sh_token_url = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token'
 config.save("cdse")
@@ -41,8 +45,7 @@ config = SHConfig("cdse")
 
 
 """
-create eval script to downolad and grab images of interest
-
+This eval script is specific for DEM values
 """
 evalscriptdem = """
 //VERSION=3
@@ -108,26 +111,20 @@ size13 = [528.0989061273101, 500.93770856969985]
 size14 = [528.2368310464356, 500.9377085697706]
 size15 = [527.9606554503678, 500.9377085697706]
 
-# namming convention
-# preflood_VV_gridnumber
-# postflood_VV_gridnumber
-# preflood_VH_gridnumber
-# postflood_VH_gridnumber
-
-#pre flood time: '2017-09-01', '2017-09-16'
-#post flood time: '2017-09-20', '2017-09-28'
-
-
+"""
+The below request pulls the DEM values for the specified area of interest and will save the TIFF and jason file
+to the folder name assigned by the user
+"""
 
 request = SentinelHubRequest(
-    data_folder="dem_15", #this is changing every pull
+    data_folder="dem_15", #folder name
     evalscript=evalscriptdem,
     input_data=[
         SentinelHubRequest.input_data(
             data_collection=DataCollection.DEM.define_from(
                     "dem", service_url=config.sh_base_url
                 ),          
-            time_interval=('2017-09-20', '2017-09-28'),          
+            time_interval=('2017-09-20', '2017-09-28'), #define time of data pull         
             other_args={"dataFilter": {"demInstance": "COPERNICUS_30"},"processing": {"upsampling": "NEAREST","downsampling": "NEAREST"}}
         ),
     ],

@@ -7,18 +7,18 @@ import geopandas as gpd
 import numpy as np
 
 """"
-well start with the mean change flood extent 
-read df change points and mean chnage shape file
+read df change points and slope files
+this will create the first 2 of 3 conditional filters mean change and mean slope
 """
 #load in polygon and point information
 df_change_points = pd.read_csv('final_flood_extent/floodpoints_and_polygons_mean_change_aoi2_20db.csv')
 df_change_points
 
-#minimal change 
+# calculate mean chnage of the polygon
 df_change_points['mean_polygon_change'] = df_change_points.groupby('poly_id')['change'].transform(lambda x: x.mean())
 df_change_points
 
-#slope fuzzy logic
+# calculate slope of the polygon
 df_change_points.columns
 slope = pd.read_csv('slope_aoi2.csv')
 #merge slope with df_change_points (left merge)
@@ -28,6 +28,11 @@ df_change_points['mean_polygon_slope'] = df_change_points.groupby('poly_id')['Sl
 df_change_points['mean_polygon_slope'] = df_change_points['mean_polygon_slope'].fillna(0)
 df_change_points
 
+"""
+read in the initial flood extent polygon
+we will use this to calculate the area of each polygon 
+after calculating the area we will merge the mean polygon values calculated above with the shape file
+"""
 # Specify the path to the shapefile
 shapefile_path = "final_flood_extent/mean_change_aoi2_20db.shp"
 # Read the shapefile into a GeoDataFrame
@@ -49,6 +54,11 @@ gdf_info["area"] = gdf_info['geometry'].area
 gdf_info = gdf_info.to_crs("EPSG:4326")
 gdf_info
 
+"""
+with the finalized data frame containing each polygons mean change value, mean slope, and area,
+we check our logical conditions, if all three are satisfied they will be kept in the final
+flood extent
+"""
 # caculate weather polygon meet criteria
 gdf_info['large_enough'] = np.where(gdf_info['area']>=8093.71, 1, 0) #areas less than 2 acres are removed
 gdf_info['change_enough'] = np.where(gdf_info['mean_polygon_change']<=-5, 1, 0) #areas less tha 5 decible average chnage are removed
@@ -58,13 +68,14 @@ gdf_info_filter = gdf_info[gdf_info['combine']==3]
 gdf_info_filter
 
 gdf = gpd.GeoDataFrame(gdf_info, geometry='geometry', crs="EPSG:4326")
-gdf2 = gpd.GeoDataFrame(gdf_info_filter, geometry='geometry', crs="EPSG:4326")
+#gdf2 = gpd.GeoDataFrame(gdf_info_filter, geometry='geometry', crs="EPSG:4326")
 
 gdf.to_file('final_flood_extent/mean_change_fuzzy_logic_aoi2_20db.shp')
-gdf2.to_file('final_flood_extent/filtered_mean_change_on_fuzzy_logic_aoi2_20db.shp')
+#gdf2.to_file('final_flood_extent/filtered_mean_change_on_fuzzy_logic_aoi2_20db.shp')
 
 
 """"
+Archived
 look at the same but with ndfi
 """
 # df_change_points = pd.read_csv('floodpoints_and_polygons_NDFI.csv')

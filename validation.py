@@ -1,5 +1,5 @@
 """
-imports
+The code below was used for validation efforts only
 """
 
 import geopandas as gpd
@@ -15,7 +15,6 @@ aerial1
 #aerial flood extent
 aerial_flood = gpd.read_file("testing_shapes/aoi1_final_test_flood.shp")
 aerial_flood = aerial_flood.explode()
-aerial_flood
 aerial_flood = aerial_flood.to_crs("EPSG:3857")
 
 
@@ -120,6 +119,7 @@ flood18 = flood18.dropna()
 flood20 = gpd.sjoin(flood20, aerial2[['geometry']], how='left')
 flood20 = flood20.dropna()
 
+
 """
 percent overlap
 """
@@ -143,6 +143,7 @@ pct_20 = (intersection_area20 / test_area) * 100
 pct_16
 pct_18
 pct_20
+
 
 """
 calculate area of our flood extent
