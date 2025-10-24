@@ -117,9 +117,10 @@ Below are example results visualized in **QGIS**:
 
 | Visualization | Description |
 |----------------|--------------|
-| ![Flood Map](images/flood_map.png) | Final flood-extent shapefile layered over Puerto Rico basemap |
-| ![Threshold Output](images/threshold_output.png) | Thresholded VV/VH change detection before filtering |
-| ![DEM Slope Map](images/dem_slope.png) | Slope raster used for conditional filtering |
+| ![Flood Map] | Final flood-extent shapefile layered over Puerto Rico basemap |
+| ![Threshold Output] | Thresholded VV/VH change detection before filtering |
+| ![DEM Slope Map] | Slope raster used for conditional filtering |
+
 
 
 ---
