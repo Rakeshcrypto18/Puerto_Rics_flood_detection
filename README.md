@@ -39,6 +39,18 @@ The objective is to detect and map flood extents in selected regions of Puerto R
 
 *(01 = cell ID, “1” = image number)*
 
+├── process_api_connection.py # Pulls Sentinel-1 VV/VH imagery for defined cells
+├── dem_process_api.py # Pulls DEM data for slope analysis
+├── geotiff_to_csv.py # Converts GeoTIFFs to coordinate-value CSVs
+├── slope.py # Calculates slope values from DEM CSVs
+├── initial_flood_extent.py # Merges data and applies thresholding for initial flood extent
+├── flood_extent_filtering.py # Applies logical filters (area, slope, mean change) for final extent
+│
+├── geo_tiffs/ # Folder storing downloaded VV/VH/DEM GeoTIFFs
+├── geotiff_csvs/ # Folder storing CSVs converted from GeoTIFFs
+├── puertorico_grid.xlsx # Grid boundaries and coordinates for Puerto Rico cells
+└── README.md # Project documentation
+
 ### 3️⃣ Convert GeoTIFFs → CSV
 - Run `geotiff_to_csv.py` for each cell’s VV and VH GeoTIFF.  
 - Each CSV contains pixel coordinates and corresponding backscatter values.  
@@ -109,12 +121,7 @@ Below are example results visualized in **QGIS**:
 | ![Threshold Output](images/threshold_output.png) | Thresholded VV/VH change detection before filtering |
 | ![DEM Slope Map](images/dem_slope.png) | Slope raster used for conditional filtering |
 
-> Place your exported maps or screenshots in an `images/` folder and reference them here using standard Markdown syntax.
 
 ---
-
-## 🧭 Authors
-
-**Team Hydrowatchers** — George Mason University  
-**Course:** DAEN 690 — Capstone in Data Analytics Engineering  
+ 
 **Focus Area:** Flood Detection using SAR & DEM data (Puerto Rico case study)
