@@ -120,7 +120,7 @@ Below are example results visualized in **QGIS**:
 | ![Flood Map] | Final flood-extent shapefile layered over Puerto Rico basemap |
 | ![Threshold Output] | Thresholded VV/VH change detection before filtering |
 | ![DEM Slope Map] | Slope raster used for conditional filtering |
-
+Full document: https://github.com/Rakeshcrypto18/Puerto_Rics_flood_detection/blob/main/Capstone_project.pdf
 
 
 ---
